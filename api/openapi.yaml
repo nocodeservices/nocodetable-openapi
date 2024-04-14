@@ -14,6 +14,7 @@ info:
   x-logo:
     url: 'https://www.nocodetable.com/img/logo-large.svg'
     altText: 'No-code Table logo'
+    href: "https://www.nocodetable.com/developers/introduction/"
 servers:
   - url: "https://us-west.nocodetable.com"
   - url: "https://eu-central.nocodetable.com"
