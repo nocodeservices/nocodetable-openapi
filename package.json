@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "No-code Table public API",
   "scripts": {
-    "generate": "npx @redocly/cli build-docs api/openapi.yaml --theme.openapi.hideDownloadButton --output=dist/index.html",
+    "generate": "npx @redocly/cli build-docs api/openapi.yaml -t src/template.hbs --output=dist/index.html",
     "deploy": "npm run generate && npx wrangler pages deploy dist"
   },
   "license": "ISC"

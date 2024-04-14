@@ -2,7 +2,12 @@ openapi: 3.1.0
 info:
   title: No-code Table public API
   version: 1.0.0
-  description: No-code Table API methods
+  description: |-
+    ## No-code Table controllers and methods
+
+    #### This is the reference for the public No-code Table API. Use the sidebar to explore the API and learn about important concepts.
+    
+    The No-code Table API can be used to integrate your data in No-code Table with any external system. The API closely follows REST semantics, uses JSON to encode objects, and relies on standard HTTP codes to signal operation outcomes.
   contact:
     name: Support
     email: team@nocodetable.com
