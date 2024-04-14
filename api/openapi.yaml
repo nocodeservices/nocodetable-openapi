@@ -1,0 +1,1006 @@
+openapi: 3.1.0
+info:
+  title: No-code Table public API
+  version: 1.0.0
+  description: No-code Table API methods
+  contact:
+    name: Support
+    email: team@nocodetable.com
+  x-logo:
+    url: 'https://www.nocodetable.com/img/logo-large.svg'
+    altText: 'No-code Table logo'
+servers:
+  - url: "https://us-west.nocodetable.com"
+  - url: "https://eu-central.nocodetable.com"
+paths:
+  /v0/documents:
+    get:
+      description: Returns the list of documents the API key can access in the order they appear on the user's home screen, 1000 bases at a time. If there is another page to request, pass the offset as a URL query parameter.
+      operationId: Get documents
+      tags:
+        - Document
+      security:
+        - BearerToken: [admin, write, read]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/cursorQuery'
+        - $ref: '#/components/parameters/documentOrderQuery'
+        - $ref: '#/components/parameters/directionQuery'
+      responses:
+        '200':
+          description: Success. List of documents and optional cursor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      description: "Creates a new document with the provided tables and returns the schema for the newly created base.<br /><br />Refer to field types for supported field types, the write format for field options, and other specifics for certain field types. Supported field types have a write format shown.<br /><br />At least one table and field must be specified. The first field in the fields array will be used as the table's primary field and must be a supported primary field type. Fields must have case-insensitive unique names within the table."
+      operationId: Create document
+      tags:
+        - Document
+      security:
+        - BearerToken: [admin, write]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+      requestBody:
+        description: New document configuration
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDocumentPayload'
+      responses:
+        '200':
+          description: Success. A schema for the newly created document
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentData'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /v0/documents/{documentId}:
+    get:
+      description: Get document by name.
+      operationId: Get document
+      tags:
+        - Document
+      security:
+        - BearerToken: [admin, write, read]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+      responses:
+        '200':
+          description: Success. Tables in document with schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentData'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    patch:
+      description: Updates the name of the document.
+      operationId: Update document
+      tags:
+        - Document
+      security:
+        - BearerToken: [admin, write]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentData'
+      responses:
+        '200':
+          description: Success. Tables in document with schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentData'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    delete:
+      description: Delete document and all tables.
+      operationId: Delete document
+      tags:
+        - Document
+      security:
+        - BearerToken: [admin, write]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+      responses:
+        '200':
+          description: Success. Tables in document with schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+
+  /v0/documents/{documentId}/tables:
+    get:
+      description: Returns the schema of the tables in the specified document.
+      operationId: Get document tables
+      tags:
+        - Table
+      security:
+        - BearerToken: [admin, write, read]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+      responses:
+        '200':
+          description: Success. Tables in document with schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentTables'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      description: Creates a new table and returns the schema for the newly created table.<br /><br />Refer to field types for supported field types, the write format for field options, and other specifics for certain field types. Supported field types have a write format shown.
+      operationId: Create table
+      tags:
+        - Table
+      security:
+        - BearerToken: [admin, write]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+      requestBody:
+        description: New table configuration
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TableData'
+      responses:
+        '200':
+          description: Success. Table with schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentTables'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /v0/documents/{documentId}/tables/{tableId}:
+    get:
+      description: Returns the schema of the table.
+      operationId: Get table
+      tags:
+        - Table
+      security:
+        - BearerToken: [admin, write, read]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+      responses:
+        '200':
+          description: Success. Table with schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableData'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    patch:
+      description: Updates the name and/or description of a table. At least one of name or description must be specified.
+      operationId: Update table
+      tags:
+        - Table
+      security:
+        - BearerToken: [admin, write]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TableMetadata'
+      responses:
+        '200':
+          description: Success. Table with schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentTables'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    delete:
+      description: Delete single table.
+      operationId: Delete table
+      tags:
+        - Table
+      security:
+        - BearerToken: [admin, write]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentTables'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /v0/documents/{documentId}/tables/{tableId}/total:
+    get:
+      description: Retrieve a records total number in the table.
+      operationId: Get records total
+      tags:
+        - Table
+      security:
+        - BearerToken: [admin, write, read]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/filterQuery'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordTotal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v0/documents/{documentId}/tables/{tableId}/fields:
+    post:
+      description: Creates a new column and returns the schema for the newly created column.<br /><br />Refer to field types for supported field types, the write format for field options, and other specifics for certain field types. Supported field types have a write format shown.
+      operationId: Create field
+      tags:
+        - Field
+      security:
+        - BearerToken: [admin, write]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FieldData'
+      responses:
+        '200':
+          description: Success. Table with schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableData'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /v0/documents/{documentId}/tables/{tableId}/fields/{fieldId}:
+    patch:
+      description: Updates the name and/or description of a field. At least one of name or description must be specified.
+      operationId: Update field
+      tags:
+        - Field
+      security:
+        - BearerToken: [admin, write]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/fieldId'
+      requestBody:
+        description: New table configuration
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FieldData'
+      responses:
+        '200':
+          description: Success. Table with schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableData'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    delete:
+      description: Delete Field for from table.
+      operationId: Delete field
+      tags:
+        - Field
+      security:
+        - BearerToken: [admin, write]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/fieldId'
+      responses:
+        '200':
+          description: Success. Table with schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableData'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v0/documents/{documentId}/tables/{tableId}/config/{configId}:
+    get:
+      description: Retrieve a table config.
+      operationId: Get table config
+      tags:
+        - Config
+      security:
+        - BearerToken: [admin, write, read]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/configId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigPayload'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      description: Upload a table config.
+      operationId: Upload table config
+      tags:
+        - Config
+      security:
+        - BearerToken: [admin, write]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/configId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigPayload'
+      responses:
+        '204':
+          description: ok
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v0/{documentId}/{tableId}:
+    get:
+      description: List records in a table. Note that table names and table ids can be used interchangeably. We recommend using table IDs so you don't need to modify your API request when your table name changes.
+      operationId: List records
+      tags:
+        - Record
+      security:
+        - BearerToken: [admin, write, read]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/cursorQuery'
+        - $ref: '#/components/parameters/offsetQuery'
+        - $ref: '#/components/parameters/limitQuery'
+        - $ref: '#/components/parameters/sortQuery'
+        - $ref: '#/components/parameters/directionQuery'
+        - $ref: '#/components/parameters/filterQuery'
+      responses:
+        '200':
+          description: Success. Tables in base with schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordsPayload'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      description: Creates multiple records.
+      operationId: Create records
+      tags:
+        - Record
+      security:
+        - BearerToken: [admin, write]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRecordsPayload'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordsPayload'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /v0/{documentId}/{tableId}/{recordId}:
+    get:
+      description: Retrieve a single record.
+      operationId: Get record
+      tags:
+        - Record
+      security:
+        - BearerToken: [admin, write, read]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/recordId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordValue'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    patch:
+      description: Updates a single record. A PATCH request will only update the fields you specify, leaving the rest as they were.
+      operationId: Update record cell
+      tags:
+        - Record
+      security:
+        - BearerToken: [admin, write]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/recordId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecordFields'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordValue'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    put:
+      description: Updates a single record. A PUT request will perform a destructive update and clear all unspecified cell values.
+      operationId: Update record cells
+      tags:
+        - Record
+      security:
+        - BearerToken: [admin, write]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/recordId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecordFields'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordValue'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    delete:
+      description: Deletes a single record
+      operationId: Delete record
+      tags:
+        - Record
+      security:
+        - BearerToken: [admin, write]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/recordId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableData'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+components:
+  securitySchemes:
+    BearerToken:
+      type: https
+      scheme: bearer
+    Cookie:
+      type: apiKey
+      in: cookie
+      name: S
+      
+  parameters:
+    cursorQuery:
+      in: query
+      name: cursor
+      description: Base64 cursor for pagination
+      schema:
+        type: string
+    filterQuery:
+      in: query
+      name: filterByFormula
+      description: base64 encoded filter set
+      schema:
+        type: string
+    sortQuery:
+      in: query
+      name: sort
+      description: field id
+      schema:
+        type: string
+    directionQuery:
+      in: query
+      name: direction
+      description: order direction
+      default: ASC
+      schema:
+        type: string
+        enum: [ASC, DESC]
+    offsetQuery:
+      in: query
+      name: offset
+      schema:
+        type: int
+    limitQuery:
+      in: query
+      name: limit
+      schema:
+        type: int
+    documentId:
+      in: path
+      name: documentId
+      required: true
+      description: Project name or identifier 
+      schema:
+        type: string
+        example: Blog
+    tableId:
+      in: path
+      name: tableId
+      required: true
+      description: Table name or identifier 
+      schema:
+        type: string
+        example: Content
+    fieldId:
+      in: path
+      name: fieldId
+      required: true
+      description: Column name or identifier 
+      schema:
+        type: string
+        example: Content
+    recordId:
+      in: path
+      name: recordId
+      required: true
+      description: Record name or identifier 
+      schema:
+        type: string
+    workspaceId:
+      in: query
+      name: workspaceId
+      description: Workspace Id
+      schema:
+        type: string
+        example: '2'
+    configId:
+      in: path
+      name: configId
+      description: config key
+      schema:
+        type: string
+        enum: [column-size, row-size, row-order, row-filter]
+    documentOrderQuery:
+      in: query
+      name: order
+      default: touched
+      schema:
+        type: string
+        enum: [touched, name]
+  schemas:
+    DocumentData:
+      type: object
+      required:
+        - schema
+        - name
+        - color
+        - touched
+      properties:
+        schema:
+          type: string
+        name:
+          type: string
+        color:
+          type: string
+        touched:
+          type: string
+
+    DocumentList:
+      type: object
+      required:
+        - documents
+      properties:
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentData'
+        cursor:
+          type: string
+          description: Base64 encoded cursor
+          example: VEsxMUdzRlNSN3VEU0E3Wk5GQ2I2WHE2ZDVkclVCNlI3bg==
+
+    CreateDocumentPayload:
+      type: object
+      required:
+        - tables
+      properties:
+        name:
+          type: string
+          example: Blog
+          description: The name for the new document.
+        tables:
+          type: array
+          description: A list of JSON objects representing the tables that will be created along with the base.
+          items:
+            $ref: '#/components/schemas/TableData'
+
+    FieldData:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          type: string
+          description: The name for table field.
+        type:
+          type: string
+          description: The type for table field in interface.<br />Simple supported types - "text|text", "float|number", "boolean|boolean"
+
+    TableMetadata:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: The name for table.
+          example: Posts
+
+    TableData:
+      type: object
+      required:
+        - name
+        - fields
+      properties:
+        name:
+          type: string
+          description: The name for table.
+          example: Posts
+        fields:
+          type: array
+          description: Fields configuration
+          items:
+            $ref: '#/components/schemas/FieldData'
+
+    DocumentTables:
+      type: object
+      required:
+        - tables
+      properties:
+        tables:
+          type: array
+          items: 
+            $ref: '#/components/schemas/TableData'
+
+    RecordValue:
+      type: object
+      required:
+        - id
+        - createdTime
+        - fields
+      properties:
+        id:
+          type: string
+        createdTime:
+          type: string
+        fields:
+          type: object
+
+    RecordTotal:
+      type: object
+      required:
+        - total
+      properties:
+        total:
+          type: int
+
+    RecordFields:
+      type: object
+
+    CreateRecordsPayload:
+      type: object
+      required:
+        - records
+      properties:
+        records:
+          type: array
+          items:
+            type: object
+
+    RecordsPayload:
+      type: object
+      required:
+        - records
+      properties:
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordValue'
+        cursor:
+          type: string
+          description: Base64 encoded cursor
+          example: VEsxMUdzRlNSN3VEU0E3Wk5GQ2I2WHE2ZDVkclVCNlI3bg==
+
+    ConfigPayload:
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          type: string
+
+    FilterCondition:
+      type: string
+      enum: [contain, does-not-contain, is, is-not, is-empty, is-not-empty]
+    
+    FilterConjunction:
+      type: string
+      enum: [or, and]
+
+    FilterExpression:
+      type: object
+      required:
+        - field
+        - condition
+      properties:
+        field:
+          type: string
+        condition:
+          $ref: '#/components/schemas/FilterCondition'
+        value:
+          type:
+            - number
+            - string
+
+    FilterSet:
+      type: object
+      required:
+        - conjunction
+        - filterSet
+      properties:
+        conjunction:
+          $ref: '#/components/schemas/FilterConjunction'
+        filterSet:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/FilterExpression'
+              - $ref: '#/components/schemas/FilterSet'
+
+  responses:
+    NotFound:
+      description: Not Found. The specified resource was not found,
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - error
+            properties:
+              error:
+                type: string
+    InternalError:
+      description: Internal Error. The server encountered an unexpected condition that prevented it from fulfilling the request.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - error
+            properties:
+              error:
+                type: string
+    BadRequest:
+      description: Bad Request. The server cannot or will not process the request due to something that is perceived to be a client error.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - error
+            properties:
+              error:
+                type: string
+    UnauthorizedError:
+      description: Unauthorized. Access token is missing or invalid.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - error
+            properties:
+              error:
+                type: string
