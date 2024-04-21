@@ -26,7 +26,7 @@ paths:
       tags:
         - Document
       security:
-        - BearerToken: [admin, write, read]
+        - BearerToken: [read]
         - Cookie: [owner, admin, creator, editor, viewer]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -52,7 +52,7 @@ paths:
       tags:
         - Document
       security:
-        - BearerToken: [admin, write]
+        - BearerToken: [admin]
         - Cookie: [owner, admin, creator, editor]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -82,7 +82,7 @@ paths:
       tags:
         - Document
       security:
-        - BearerToken: [admin, write, read]
+        - BearerToken: [read]
         - Cookie: [owner, admin, creator, editor, viewer]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -108,7 +108,7 @@ paths:
       tags:
         - Document
       security:
-        - BearerToken: [admin, write]
+        - BearerToken: [admin]
         - Cookie: [owner, admin, creator, editor]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -139,7 +139,7 @@ paths:
       tags:
         - Document
       security:
-        - BearerToken: [admin, write]
+        - BearerToken: [admin]
         - Cookie: [owner, admin, creator, editor]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -168,7 +168,7 @@ paths:
       tags:
         - Table
       security:
-        - BearerToken: [admin, write, read]
+        - BearerToken: [read]
         - Cookie: [owner, admin, creator, editor, viewer]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -194,7 +194,7 @@ paths:
       tags:
         - Table
       security:
-        - BearerToken: [admin, write]
+        - BearerToken: [admin]
         - Cookie: [owner, admin, creator, editor]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -227,7 +227,7 @@ paths:
       tags:
         - Table
       security:
-        - BearerToken: [admin, write, read]
+        - BearerToken: [read]
         - Cookie: [owner, admin, creator, editor, viewer]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -254,7 +254,7 @@ paths:
       tags:
         - Table
       security:
-        - BearerToken: [admin, write]
+        - BearerToken: [admin]
         - Cookie: [owner, admin, creator, editor]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -286,7 +286,7 @@ paths:
       tags:
         - Table
       security:
-        - BearerToken: [admin, write]
+        - BearerToken: [admin]
         - Cookie: [owner, admin, creator, editor]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -313,7 +313,7 @@ paths:
       tags:
         - Table
       security:
-        - BearerToken: [admin, write, read]
+        - BearerToken: [read]
         - Cookie: [owner, admin, creator, editor, viewer]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -342,7 +342,7 @@ paths:
       tags:
         - Field
       security:
-        - BearerToken: [admin, write]
+        - BearerToken: [admin]
         - Cookie: [owner, admin, creator, editor]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -375,7 +375,7 @@ paths:
       tags:
         - Field
       security:
-        - BearerToken: [admin, write]
+        - BearerToken: [admin]
         - Cookie: [owner, admin, creator, editor]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -409,7 +409,7 @@ paths:
       tags:
         - Field
       security:
-        - BearerToken: [admin, write]
+        - BearerToken: [admin]
         - Cookie: [owner, admin, creator, editor]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -439,7 +439,7 @@ paths:
       tags:
         - Config
       security:
-        - BearerToken: [admin, write, read]
+        - BearerToken: [read]
         - Cookie: [owner, admin, creator, editor, viewer]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -466,7 +466,7 @@ paths:
       tags:
         - Config
       security:
-        - BearerToken: [admin, write]
+        - BearerToken: [admin]
         - Cookie: [owner, admin, creator, editor, viewer]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -497,7 +497,7 @@ paths:
       tags:
         - Record
       security:
-        - BearerToken: [admin, write, read]
+        - BearerToken: [read]
         - Cookie: [owner, admin, creator, editor, viewer]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -530,7 +530,7 @@ paths:
       tags:
         - Record
       security:
-        - BearerToken: [admin, write]
+        - BearerToken: [write]
         - Cookie: [owner, admin, creator, editor]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -562,7 +562,7 @@ paths:
       tags:
         - Record
       security:
-        - BearerToken: [admin, write, read]
+        - BearerToken: [read]
         - Cookie: [owner, admin, creator, editor, viewer]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -589,7 +589,7 @@ paths:
       tags:
         - Record
       security:
-        - BearerToken: [admin, write]
+        - BearerToken: [write]
         - Cookie: [owner, admin, creator, editor]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -621,7 +621,7 @@ paths:
       tags:
         - Record
       security:
-        - BearerToken: [admin, write]
+        - BearerToken: [write]
         - Cookie: [owner, admin, creator, editor]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -653,7 +653,7 @@ paths:
       tags:
         - Record
       security:
-        - BearerToken: [admin, write]
+        - BearerToken: [write]
         - Cookie: [owner, admin, creator, editor]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
@@ -665,7 +665,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TableData'
+                $ref: '#/components/schemas/RecordValue'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
