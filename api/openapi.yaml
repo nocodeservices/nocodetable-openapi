@@ -833,6 +833,9 @@ components:
         type:
           type: string
           description: The type for table field in interface.<br />Simple supported types - "text|text", "float|number", "boolean|boolean"
+        metadata:
+          type: object
+          description: Addition field metadata.
 
     TableMetadata:
       type: object
