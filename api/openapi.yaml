@@ -824,12 +824,16 @@ components:
     FieldData:
       type: object
       required:
+        - id
         - name
         - type
       properties:
+        id:
+          type: string
+          description: The name for table field on database.
         name:
           type: string
-          description: The name for table field.
+          description: The formatted name for table field.
         type:
           type: string
           description: The type for table field in interface.<br />Simple supported types - "text|text", "float|number", "boolean|boolean"
@@ -850,12 +854,17 @@ components:
     TableData:
       type: object
       required:
+        - id
         - name
         - fields
       properties:
+        id:
+          type: string
+          description: The name for table in the database.
+          example: posts
         name:
           type: string
-          description: The name for table.
+          description: The formatted name of table.
           example: Posts
         fields:
           type: array
