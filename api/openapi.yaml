@@ -204,7 +204,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TableData'
+              $ref: '#/components/schemas/CreateTableData'
       responses:
         '200':
           description: Success. Table with schema.
@@ -352,7 +352,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FieldData'
+              $ref: '#/components/schemas/CreateFieldData'
       responses:
         '200':
           description: Success. Table with schema.
@@ -387,7 +387,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FieldData'
+              $ref: '#/components/schemas/CreateFieldData'
       responses:
         '200':
           description: Success. Table with schema.
@@ -819,18 +819,38 @@ components:
           type: array
           description: A list of JSON objects representing the tables that will be created along with the base.
           items:
-            $ref: '#/components/schemas/TableData'
+            $ref: '#/components/schemas/CreateTableData'
+
+    CreateFieldData:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          type: string
+          description: The formatted name for table field.
+        type:
+          type: string
+          description: The type for table field in interface.<br />Simple supported types - "text|text", "float|number", "boolean|boolean"
+        metadata:
+          type: object
+          description: Addition field metadata.
 
     FieldData:
       type: object
       required:
         - id
+        - index
         - name
         - type
       properties:
         id:
           type: string
           description: The name for table field on database.
+        index:
+          type: string
+          description: The unique index for column on database.
         name:
           type: string
           description: The formatted name for table field.
@@ -850,6 +870,22 @@ components:
           type: string
           description: The name for table.
           example: Posts
+
+    CreateTableData:
+      type: object
+      required:
+        - name
+        - fields
+      properties:
+        name:
+          type: string
+          description: The name of table.
+          example: Posts
+        fields:
+          type: array
+          description: Fields configuration
+          items:
+            $ref: '#/components/schemas/CreateFieldData'
 
     TableData:
       type: object
