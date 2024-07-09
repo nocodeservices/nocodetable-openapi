@@ -1013,6 +1013,10 @@ components:
               - $ref: '#/components/schemas/FilterExpression'
               - $ref: '#/components/schemas/FilterSet'
 
+    LookupQuery:
+      type: string
+      enum: [limit-first, limit-last, max, min]
+      
   responses:
     NotFound:
       description: Not Found. The specified resource was not found,
