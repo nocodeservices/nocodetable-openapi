@@ -432,6 +432,40 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 
+  /v0/documents/{documentId}/tables/{tableId}/formulas:
+    post:
+      description: Validate formula field
+      operationId: validate formula field
+      tags:
+        - Formula
+      security:
+        - BearerToken: [admin]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFieldData'
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormulaValidation'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
   /v0/documents/{documentId}/tables/{tableId}/config/{configId}:
     get:
       description: Retrieve a table config.
@@ -1016,7 +1050,18 @@ components:
     LookupQuery:
       type: string
       enum: [limit-first, limit-last, max, min]
-      
+    
+    FormulaValidation:
+      type: object
+      required:
+        - valid
+      properties:
+        valid:
+          type: boolean
+        record:
+          $ref: '#/components/schemas/RecordValue'
+
+
   responses:
     NotFound:
       description: Not Found. The specified resource was not found,
