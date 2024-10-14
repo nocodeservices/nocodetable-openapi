@@ -466,7 +466,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 
-  /v0/documents/{documentId}/tables/{tableId}/config/{configId}:
+  /v0/documents/{documentId}/tables/{tableId}/config/{tableConfigId}:
     get:
       description: Retrieve a table config.
       operationId: Get table config
@@ -479,7 +479,7 @@ paths:
         - $ref: '#/components/parameters/workspaceId'
         - $ref: '#/components/parameters/documentId'
         - $ref: '#/components/parameters/tableId'
-        - $ref: '#/components/parameters/configId'
+        - $ref: '#/components/parameters/tableConfigId'
       responses:
         '200':
           content:
@@ -501,12 +501,12 @@ paths:
         - Config
       security:
         - BearerToken: [admin]
-        - Cookie: [owner, admin, creator, editor, viewer]
+        - Cookie: [owner, admin, creator, editor]
       parameters:
         - $ref: '#/components/parameters/workspaceId'
         - $ref: '#/components/parameters/documentId'
         - $ref: '#/components/parameters/tableId'
-        - $ref: '#/components/parameters/configId'
+        - $ref: '#/components/parameters/tableConfigId'
       requestBody:
         content:
           application/json:
@@ -523,6 +523,66 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalError'
+  /v0/documents/{documentId}/tables/{tableId}/record/{recordId}/config/{recordConfigId}:
+    get:
+      description: Retrieve a record config.
+      operationId: Get record config
+      tags:
+        - Config
+      security:
+        - BearerToken: [read]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/recordId'
+        - $ref: '#/components/parameters/recordConfigId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigPayload'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      description: Upload a record config.
+      operationId: Upload record config
+      tags:
+        - Config
+      security:
+        - BearerToken: [admin]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/recordId'
+        - $ref: '#/components/parameters/recordConfigId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigPayload'
+      responses:
+        '204':
+          description: ok
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
 
   /v0/{documentId}/{tableId}:
     get:
@@ -794,13 +854,20 @@ components:
       schema:
         type: string
         example: '2'
-    configId:
+    tableConfigId:
       in: path
-      name: configId
+      name: tableConfigId
       description: config key
       schema:
         type: string
         enum: [column-size, row-size, row-order, row-filter]
+    recordConfigId:
+      in: path
+      name: recordConfigId
+      description: config key
+      schema:
+        type: string
+        enum: [email]
     documentOrderQuery:
       in: query
       name: order
