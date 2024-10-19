@@ -867,7 +867,7 @@ components:
       description: config key
       schema:
         type: string
-        enum: [email]
+        enum: [email, column-size]
     documentOrderQuery:
       in: query
       name: order
