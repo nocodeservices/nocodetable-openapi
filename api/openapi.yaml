@@ -432,6 +432,96 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 
+  /v0/documents/{documentId}/tables/{tableId}/views:
+    get:
+      description: Returns the schema of the views in the specified table.
+      operationId: Get table views
+      tags:
+        - View
+      security:
+        - BearerToken: [read]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+      responses:
+        '200':
+          description: Success. Views for table.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableViews'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      description: Creates a new view for table and return table views.
+      operationId: Create view
+      tags:
+        - View
+      security:
+        - BearerToken: [admin]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateViewData'
+      responses:
+        '200':
+          description: Success. Table with schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableViews'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v0/documents/{documentId}/tables/{tableId}/views/{viewId}/total:
+    get:
+      description: Retrieve a records total number in the view.
+      operationId: Get records total
+      tags:
+        - View
+      security:
+        - BearerToken: [read]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/viewId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordTotal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
   /v0/documents/{documentId}/tables/{tableId}/formulas:
     post:
       description: Validate formula field
@@ -832,6 +922,14 @@ components:
       schema:
         type: string
         example: Content
+    viewId:
+      in: path
+      name: viewId
+      required: true
+      description: View name or identifier 
+      schema:
+        type: string
+        example: Content
     fieldId:
       in: path
       name: fieldId
@@ -1128,6 +1226,56 @@ components:
         record:
           $ref: '#/components/schemas/RecordValue'
 
+    CreateViewData:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: The formatted name for table view.
+        sort:
+          type: string
+        filterByFormula:
+          type: string
+        direction:
+          type: string
+          enum: [ASC, DESC]
+
+    ViewData:
+      type: object
+      required:
+        - id
+        - name
+        - fields
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          description: The formatted name for table view.
+        fields:
+          type: array
+          description: Fields configuration
+          items:
+            $ref: '#/components/schemas/FieldData'
+        sort:
+          type: string
+        direction:
+          type: string
+          enum: [ASC, DESC]
+        filter:
+          $ref: '#/components/schemas/FilterSet'
+
+    TableViews:
+      type: object
+      required:
+        - views
+      properties:
+        views:
+          type: array
+          items: 
+            $ref: '#/components/schemas/ViewData'
 
   responses:
     NotFound:
