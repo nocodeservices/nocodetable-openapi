@@ -492,6 +492,94 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalError'
+  /v0/documents/{documentId}/tables/{tableId}/views/{viewId}:
+    get:
+      description: Returns the schema of the view.
+      operationId: Get view
+      tags:
+        - View
+      security:
+        - BearerToken: [read]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/viewId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewData'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    patch:
+      description: Updates the data of a view. At least one of field must be specified.
+      operationId: Update view
+      tags:
+        - View
+      security:
+        - BearerToken: [admin]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/viewId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateViewData'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewData'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    delete:
+      description: Delete view for table.
+      operationId: Delete view
+      tags:
+        - View
+      security:
+        - BearerToken: [admin]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/viewId'
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableViews'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
 
   /v0/documents/{documentId}/tables/{tableId}/views/{viewId}/total:
     get:
@@ -894,8 +982,7 @@ components:
       description: order direction
       default: ASC
       schema:
-        type: string
-        enum: [ASC, DESC]
+        $ref: '#/components/schemas/Direction'
     offsetQuery:
       in: query
       name: offset
@@ -974,6 +1061,11 @@ components:
         type: string
         enum: [touched, name]
   schemas:
+
+    Direction:
+      type: string
+      enum: [ASC, DESC]
+
     DocumentData:
       type: object
       required:
@@ -1228,8 +1320,6 @@ components:
 
     CreateViewData:
       type: object
-      required:
-        - name
       properties:
         name:
           type: string
@@ -1239,8 +1329,7 @@ components:
         filterByFormula:
           type: string
         direction:
-          type: string
-          enum: [ASC, DESC]
+          $ref: '#/components/schemas/Direction'
 
     ViewData:
       type: object
@@ -1262,8 +1351,7 @@ components:
         sort:
           type: string
         direction:
-          type: string
-          enum: [ASC, DESC]
+          $ref: '#/components/schemas/Direction'
         filter:
           $ref: '#/components/schemas/FilterSet'
 
