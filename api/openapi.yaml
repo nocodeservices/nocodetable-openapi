@@ -701,6 +701,65 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalError'
+  /v0/documents/{documentId}/tables/{tableId}/fields/{fieldId}/config/{fieldConfigId}:
+    get:
+      description: Retrieve a field config.
+      operationId: Get field config
+      tags:
+        - Config
+      security:
+        - BearerToken: [read]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/fieldId'
+        - $ref: '#/components/parameters/fieldConfigId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigPayload'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      description: Upload a field config.
+      operationId: Upload field config
+      tags:
+        - Config
+      security:
+        - BearerToken: [admin]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/fieldId'
+        - $ref: '#/components/parameters/fieldConfigId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigPayload'
+      responses:
+        '204':
+          description: ok
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
   /v0/documents/{documentId}/tables/{tableId}/record/{recordId}/config/{recordConfigId}:
     get:
       description: Retrieve a record config.
@@ -1045,7 +1104,14 @@ components:
       description: config key
       schema:
         type: string
-        enum: [column-size, row-size, row-order, row-filter]
+        enum: [column-size, row-size, row-order, row-filter, column-order]
+    fieldConfigId:
+      in: path
+      name: fieldConfigId
+      description: config key
+      schema: 
+        type: string
+        enum: [column-primary, column-hidden]
     recordConfigId:
       in: path
       name: recordConfigId
