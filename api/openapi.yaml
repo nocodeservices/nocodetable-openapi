@@ -1104,14 +1104,14 @@ components:
       description: config key
       schema:
         type: string
-        enum: [column-size, row-size, row-order, row-filter, column-order]
+        enum: [column-size, row-size, row-order, row-filter, column-order, column-hidden]
     fieldConfigId:
       in: path
       name: fieldConfigId
       description: config key
       schema: 
         type: string
-        enum: [column-primary, column-hidden]
+        enum: [column-primary, column-hidden, column-size, column-order]
     recordConfigId:
       in: path
       name: recordConfigId
@@ -1326,11 +1326,22 @@ components:
 
     ConfigPayload:
       type: object
+      oneOf:
+        - $ref: '#/components/schemas/ConfigValuePayload'
+        - $ref: '#/components/schemas/ConfigDictPayload'
+
+    ConfigValuePayload:
+      type: object
       required:
         - value
       properties:
         value:
           type: string
+
+    ConfigDictPayload:
+      type: object
+      additionalProperties:
+        type: string
 
     FilterCondition:
       type: string
