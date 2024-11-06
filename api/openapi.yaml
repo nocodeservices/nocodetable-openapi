@@ -1201,6 +1201,7 @@ components:
         - index
         - name
         - type
+        - metadata
       properties:
         id:
           type: string
@@ -1413,18 +1414,12 @@ components:
       required:
         - id
         - name
-        - fields
       properties:
         id:
           type: string
         name:
           type: string
           description: The formatted name for table view.
-        fields:
-          type: array
-          description: Fields configuration
-          items:
-            $ref: '#/components/schemas/FieldData'
         sort:
           type: string
         direction:
