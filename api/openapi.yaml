@@ -432,6 +432,184 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 
+  /v0/documents/{documentId}/tables/{tableId}/views:
+    get:
+      description: Returns the schema of the views in the specified table.
+      operationId: Get table views
+      tags:
+        - View
+      security:
+        - BearerToken: [read]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+      responses:
+        '200':
+          description: Success. Views for table.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableViews'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      description: Creates a new view for table and return table views.
+      operationId: Create view
+      tags:
+        - View
+      security:
+        - BearerToken: [admin]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateViewData'
+      responses:
+        '200':
+          description: Success. Table with schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableViews'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /v0/documents/{documentId}/tables/{tableId}/views/{viewId}:
+    get:
+      description: Returns the schema of the view.
+      operationId: Get view
+      tags:
+        - View
+      security:
+        - BearerToken: [read]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/viewId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewData'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    patch:
+      description: Updates the data of a view. At least one of field must be specified.
+      operationId: Update view
+      tags:
+        - View
+      security:
+        - BearerToken: [admin]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/viewId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateViewData'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewData'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    delete:
+      description: Delete view for table.
+      operationId: Delete view
+      tags:
+        - View
+      security:
+        - BearerToken: [admin]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/viewId'
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableViews'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v0/documents/{documentId}/tables/{tableId}/views/{viewId}/total:
+    get:
+      description: Retrieve a records total number in the view.
+      operationId: Get records total
+      tags:
+        - View
+      security:
+        - BearerToken: [read]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/viewId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordTotal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
   /v0/documents/{documentId}/tables/{tableId}/formulas:
     post:
       description: Validate formula field
@@ -507,6 +685,65 @@ paths:
         - $ref: '#/components/parameters/documentId'
         - $ref: '#/components/parameters/tableId'
         - $ref: '#/components/parameters/tableConfigId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigPayload'
+      responses:
+        '204':
+          description: ok
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /v0/documents/{documentId}/tables/{tableId}/fields/{fieldId}/config/{fieldConfigId}:
+    get:
+      description: Retrieve a field config.
+      operationId: Get field config
+      tags:
+        - Config
+      security:
+        - BearerToken: [read]
+        - Cookie: [owner, admin, creator, editor, viewer]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/fieldId'
+        - $ref: '#/components/parameters/fieldConfigId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigPayload'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      description: Upload a field config.
+      operationId: Upload field config
+      tags:
+        - Config
+      security:
+        - BearerToken: [admin]
+        - Cookie: [owner, admin, creator, editor]
+      parameters:
+        - $ref: '#/components/parameters/workspaceId'
+        - $ref: '#/components/parameters/documentId'
+        - $ref: '#/components/parameters/tableId'
+        - $ref: '#/components/parameters/fieldId'
+        - $ref: '#/components/parameters/fieldConfigId'
       requestBody:
         content:
           application/json:
@@ -804,8 +1041,7 @@ components:
       description: order direction
       default: ASC
       schema:
-        type: string
-        enum: [ASC, DESC]
+        $ref: '#/components/schemas/Direction'
     offsetQuery:
       in: query
       name: offset
@@ -829,6 +1065,14 @@ components:
       name: tableId
       required: true
       description: Table name or identifier 
+      schema:
+        type: string
+        example: Content
+    viewId:
+      in: path
+      name: viewId
+      required: true
+      description: View name or identifier 
       schema:
         type: string
         example: Content
@@ -860,7 +1104,14 @@ components:
       description: config key
       schema:
         type: string
-        enum: [column-size, row-size, row-order, row-filter]
+        enum: [column-size, row-size, row-order, row-filter, column-order, column-hidden, view-order]
+    fieldConfigId:
+      in: path
+      name: fieldConfigId
+      description: config key
+      schema: 
+        type: string
+        enum: [column-primary, column-hidden, column-size, column-order]
     recordConfigId:
       in: path
       name: recordConfigId
@@ -876,6 +1127,11 @@ components:
         type: string
         enum: [touched, name]
   schemas:
+
+    Direction:
+      type: string
+      enum: [ASC, DESC]
+
     DocumentData:
       type: object
       required:
@@ -945,6 +1201,7 @@ components:
         - index
         - name
         - type
+        - metadata
       properties:
         id:
           type: string
@@ -1070,11 +1327,22 @@ components:
 
     ConfigPayload:
       type: object
+      oneOf:
+        - $ref: '#/components/schemas/ConfigValuePayload'
+        - $ref: '#/components/schemas/ConfigDictPayload'
+
+    ConfigValuePayload:
+      type: object
       required:
         - value
       properties:
         value:
           type: string
+
+    ConfigDictPayload:
+      type: object
+      additionalProperties:
+        type: string
 
     FilterCondition:
       type: string
@@ -1128,6 +1396,46 @@ components:
         record:
           $ref: '#/components/schemas/RecordValue'
 
+    CreateViewData:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The formatted name for table view.
+        sort:
+          type: string
+        filterByFormula:
+          type: string
+        direction:
+          $ref: '#/components/schemas/Direction'
+
+    ViewData:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          description: The formatted name for table view.
+        sort:
+          type: string
+        direction:
+          $ref: '#/components/schemas/Direction'
+        filter:
+          $ref: '#/components/schemas/FilterSet'
+
+    TableViews:
+      type: object
+      required:
+        - views
+      properties:
+        views:
+          type: array
+          items: 
+            $ref: '#/components/schemas/ViewData'
 
   responses:
     NotFound:
