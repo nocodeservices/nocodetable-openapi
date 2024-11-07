@@ -1104,7 +1104,7 @@ components:
       description: config key
       schema:
         type: string
-        enum: [column-size, row-size, row-order, row-filter, column-order, column-hidden]
+        enum: [column-size, row-size, row-order, row-filter, column-order, column-hidden, view-order]
     fieldConfigId:
       in: path
       name: fieldConfigId
